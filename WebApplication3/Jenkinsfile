@@ -1,0 +1,31 @@
+pipeline {
+    agent any
+    environment{
+        IMAGE_NAME = 'ayush900/jenkins-webapp'
+        IMAGE_TAG  = 'latest'
+        DOCKERFILE_PATH = 'WebApplication3/Dockerfile'
+   }
+    stages {
+        stage('Checkout'){
+            steps{
+                checkout scm
+            }
+        }
+        stage('Build'){
+            steps{
+                sh 'dotnet build WebApplication3/WebApplication3.csproj --configuration Release'
+            }
+        }
+        
+        
+        
+       stage('docker build') {
+            steps {
+                    script{
+                        def dockerfile = "${DOCKERFILE_PATH}"
+                        docker.build("${IMAGE_NAME}:${IMAGE_TAG}", "-f ${dockerfile} .")
+                    }
+            }
+        }
+    }
+}
